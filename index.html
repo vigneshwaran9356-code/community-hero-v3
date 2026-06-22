@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Hero</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🏘️ Community Hero</h1>
+    <p>Report • Track • Resolve Local Issues</p>
+  </header>
+
+  <main>
+    <!-- Report Form -->
+    <section id="report-section">
+      <h2>Report an Issue</h2>
+      
+      <input type="file" id="issuePhoto" accept="image/*">
+      <img id="preview" style="display:none; width:200px;">
+      
+      <textarea id="description" 
+        placeholder="Describe the issue..."></textarea>
+      
+      <input id="category" 
+        placeholder="Category (AI will detect automatically)">
+      
+      <button onclick="submitReport()">
+        📍 Submit Report
+      </button>
+    </section>
+
+    <!-- AI Result -->
+    <section id="ai-result" style="display:none;">
+      <h3>AI Analysis Result:</h3>
+      <div id="result-box"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
