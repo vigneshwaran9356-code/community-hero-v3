@@ -1,5 +1,5 @@
 // YOUR GEMINI API KEY
-const API_KEY = "my api key";
+const API_KEY = "PASTE_YOUR_API_KEY_HERE";
 
 // Show image preview when user selects photo
 document.getElementById('issuePhoto')
@@ -54,7 +54,7 @@ function convertToBase64(file) {
 // Send image to Gemini API
 async function analyzeWithGemini(base64Image, userDescription) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -87,6 +87,11 @@ async function analyzeWithGemini(base64Image, userDescription) {
   );
   
   const data = await response.json();
+  console.log("Gemini Response:", data);
+  if (!data.candidates) {
+  alert(JSON.stringify(data));
+  return;
+}
   const text = data.candidates[0].content.parts[0].text;
   
   // Clean and parse JSON
