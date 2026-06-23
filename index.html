@@ -3,41 +3,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Hero</title>
+  <title>Community Hero - Civic OS</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Leaflet Map (FREE - no API key needed) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
-  <header>
-    <h1>🏘️ Community Hero</h1>
-    <p>Report • Track • Resolve Local Issues</p>
-  </header>
+  <!-- TOP NAV -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="nav-logo">
+        <div class="logo-shield">🛡️</div>
+        <div>
+          <div class="logo-title">Community Hero</div>
+          <div class="logo-sub">CIVIC OS · V1.0</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="location-pill" id="nav-location">
+        <span class="location-dot"></span>
+        <span id="nav-location-text">Detecting location...</span>
+      </div>
+    </div>
+  </nav>
 
-  <main>
-    <!-- Report Form -->
-    <section id="report-section">
-      <h2>Report an Issue</h2>
-      
-      <input type="file" id="issuePhoto" accept="image/*">
-      <img id="preview" style="display:none; width:200px;">
-      
-      <textarea id="description" 
-        placeholder="Describe the issue..."></textarea>
-      
-      <input id="category" 
-        placeholder="Category (AI will detect automatically)">
-      
-      <button onclick="submitReport()">
-        📍 Submit Report
-      </button>
-    </section>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="powered-badge">
+        ✨ Powered by Google Gemini AI
+      </div>
+      <h1 class="hero-title">
+        Report. <span class="accent">Resolve.</span><br>
+        Rebuild your city.
+      </h1>
+      <p class="hero-desc">
+        Snap a photo of a pothole, broken streetlight, leak or hazard.
+        Our AI classifies it, prioritizes it, and routes it to the right
+        department — all in seconds.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="scrollToReport()">
+          📷 Report an issue
+        </button>
+        <button class="btn-secondary" onclick="scrollToFeed()">
+          View community feed
+        </button>
+      </div>
+    </div>
 
-    <!-- AI Result -->
-    <section id="ai-result" style="display:none;">
-      <h3>AI Analysis Result:</h3>
-      <div id="result-box"></div>
-    </section>
+    <div class="hero-right">
+      <!-- Live Impact Card -->
+      <div class="impact-card">
+        <div class="impact-header">
+          <span class="impact-title">Live impact</span>
+          <span class="realtime-badge">REAL-TIME</span>
+        </div>
+        <div class="impact-stats">
+          <div class="impact-stat">
+            <div class="stat-label">Reports</div>
+            <div class="stat-value" id="hero-total">0</div>
+            <div class="stat-icon">📊</div>
+          </div>
+          <div class="impact-stat critical-stat">
+            <div class="stat-label">Critical</div>
+            <div class="stat-value critical-val" id="hero-critical">0</div>
+            <div class="stat-icon">⚠️</div>
+          </div>
+          <div class="impact-stat">
+            <div class="stat-label">Resolved</div>
+            <div class="stat-value" id="hero-resolved">0</div>
+            <div class="stat-icon">✓</div>
+          </div>
+        </div>
+
+        <!-- Rank Card -->
+        <div class="rank-card">
+          <div class="rank-left">
+            <div class="rank-icon">🏆</div>
+            <div>
+              <div class="rank-label">YOUR RANK</div>
+              <div class="rank-title" id="rank-title">Rookie Citizen</div>
+            </div>
+          </div>
+          <div class="rank-right">
+            <div class="rank-count" id="rank-count">0</div>
+            <div class="rank-next" id="rank-next">reports · 5 to next</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-grid">
+
+    <!-- LEFT: Reporter + AI Result -->
+    <div class="left-col">
+
+      <!-- AI Issue Reporter -->
+      <div class="panel" id="report-section">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="panel-icon">✨</span>
+            AI Issue Reporter
+          </div>
+          <span class="gemini-badge">Gemini Vision</span>
+        </div>
+
+        <!-- Media Tabs -->
+        <div class="media-tabs">
+          <button class="mtab active" onclick="switchTab('upload', this)">
+            ↑ Upload
+          </button>
+          <button class="mtab" onclick="switchTab('video', this)">
+            ▶ Video
+          </button>
+          <button class="mtab" onclick="switchTab('live', this)">
+            ◉ Live
+          </button>
+        </div>
+
+        <!-- Upload Area -->
+        <div id="tab-upload">
+          <div class="drop-zone" onclick="document.getElementById('photoInput').click()"
+            ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+            <div class="drop-icon">↑</div>
+            <div class="drop-text">Drop a photo or tap to browse</div>
+            <div class="drop-hint">JPG, PNG or MP4 · up to 20MB</div>
+            <input type="file" id="photoInput" accept="image/*" style="display:none"
+              onchange="handlePhoto(this)">
+          </div>
+          <img id="photoPreview" style="display:none" class="media-preview">
+        </div>
+
+        <!-- Video Tab -->
+        <div id="tab-video" style="display:none">
+          <div class="drop-zone" onclick="document.getElementById('videoInput').click()">
+            <div class="drop-icon">▶</div>
+            <div class="drop-text">Drop a video or tap to browse</div>
+            <div class="drop-hint">MP4, MOV · up to 20MB</div>
+            <input type="file" id="videoInput" accept="video/*" style="display:none"
+              onchange="handleVideo(this)">
+          </div>
+          <video id="videoPreview" controls style="display:none" class="media-preview"></video>
+        </div>
+
+        <!-- Live Camera Tab -->
+        <div id="tab-live" style="display:none">
+          <video id="cameraFeed" autoplay playsinline class="media-preview"></video>
+          <button class="capture-btn" onclick="captureFromCamera()">
+            ◉ Capture Photo
+          </button>
+          <canvas id="captureCanvas" style="display:none"></canvas>
+        </div>
+
+        <!-- Location Row -->
+        <div class="location-row">
+          <div class="loc-info">
+            <span class="loc-pin">📍</span>
+            <span id="loc-text">Location not detected</span>
+          </div>
+          <button class="loc-btn" onclick="detectLocation()">Detect</button>
+        </div>
+
+        <!-- Description -->
+        <textarea id="description" class="desc-input"
+          placeholder="Describe the issue — location details, how long it's been here, danger level...">
+        </textarea>
+
+        <!-- Analyze Button -->
+        <button class="analyze-btn" onclick="analyzeIssue()" id="analyzeBtn">
+          ✨ Analyze &amp; Report
+        </button>
+      </div>
+
+      <!-- AI Result Panel -->
+      <div class="panel" id="ai-result-panel" style="display:none">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="panel-icon">📊</span>
+            AI Result
+          </div>
+          <span class="live-badge">Live</span>
+        </div>
+        <div id="ai-result-content"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Map + Dashboard -->
+    <div class="right-col">
+
+      <!-- Live City Map -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="panel-icon">📍</span>
+            Live City Map
+          </div>
+          <div class="map-legend">
+            <span class="leg critical">● Critical</span>
+            <span class="leg high">● High</span>
+            <span class="leg medium">● Medium</span>
+            <span class="leg low">● Low</span>
+          </div>
+        </div>
+        <div id="map"></div>
+      </div>
+
+      <!-- Impact Dashboard -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="panel-icon">🏆</span>
+            Impact Dashboard
+          </div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-label">TOTAL</div>
+            <div class="dash-value" id="d-total">0</div>
+          </div>
+          <div class="dash-card critical-card">
+            <div class="dash-label">CRITICAL</div>
+            <div class="dash-value critical-val" id="d-critical">0</div>
+          </div>
+          <div class="dash-card high-card">
+            <div class="dash-label">HIGH</div>
+            <div class="dash-value high-val" id="d-high">0</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-label">RESOLVED</div>
+            <div class="dash-value resolved-val" id="d-resolved">0</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-label">VOTES</div>
+            <div class="dash-value" id="d-votes">0</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-label">VERIFIED</div>
+            <div class="dash-value" id="d-verified">0</div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories-section">
+          <div class="cat-title">CATEGORIES</div>
+          <div id="cat-breakdown"></div>
+        </div>
+      </div>
+
+    </div>
   </main>
+
+  <!-- COMMUNITY FEED -->
+  <section class="feed-section" id="feed-section">
+    <div class="feed-header">
+      <h2 class="feed-title">Community Reports</h2>
+      <div class="feed-filters">
+        <button class="feed-filter active" onclick="filterFeed('all', this)">All</button>
+        <button class="feed-filter" onclick="filterFeed('critical', this)">Critical</button>
+        <button class="feed-filter" onclick="filterFeed('high', this)">High</button>
+        <button class="feed-filter" onclick="filterFeed('new', this)">New</button>
+        <button class="feed-filter" onclick="filterFeed('resolved', this)">Resolved</button>
+      </div>
+    </div>
+    <div class="feed-grid" id="feed-grid">
+      <div class="empty-feed">
+        <div class="empty-icon">🌟</div>
+        <p>No reports yet. Be the first Community Hero!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span>🛡️ Community Hero — community-driven civic engagement platform.</span>
+    <span>Powered by <span class="accent">Google Gemini AI</span></span>
+  </footer>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
 
   <script src="app.js"></script>
 </body>
