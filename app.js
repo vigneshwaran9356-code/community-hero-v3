@@ -1,5 +1,5 @@
 // ===== CONFIG =====
-const GEMINI_KEY = "my key api";
+const GEMINI_KEY = "my api key";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDHmXD59FVU1SKdDDMS3T8_zv3BGHF55bE",
@@ -29,6 +29,7 @@ let cameraStream = null;
 window.addEventListener('load', () => {
   initMap();
   detectLocation();
+  loadReports();
 });
 
 // ===== MAP (Leaflet - FREE) =====
@@ -359,7 +360,9 @@ function saveIssue(r) {
     status: 'reported',
     upvotes: 0,
     downvotes: 0,
-    imgSrc: imgSrc,
+    imgSrc: mediaBase64
+  ? `data:image/jpeg;base64,${mediaBase64}`
+  : null,
     date: new Date().toLocaleDateString('en-GB')
   });
   saveToFirebase(issues[0]);
@@ -568,5 +571,41 @@ async function saveToFirebase(issue) {
     console.log("Saved to Firestore");
   } catch (err) {
     console.error(err);
+  }
+}
+async function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  try {
+    const result = await auth.signInWithPopup(provider);
+
+    alert("Welcome " + result.user.displayName);
+
+    console.log("User:", result.user);
+
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
+}
+async function loadReports() {
+  try {
+    const snapshot = await db.collection("reports").get();
+
+    issues = [];
+
+    snapshot.forEach((doc) => {
+      issues.push(doc.data());
+    });
+
+    //updateDashboard();
+    //renderReports();
+    updateAllStats();
+    renderFeed();
+
+    console.log("Reports loaded:", issues.length);
+
+  } catch (err) {
+    console.error("Load Error:", err);
   }
 }
