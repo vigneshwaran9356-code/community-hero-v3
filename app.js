@@ -1,5 +1,20 @@
 // ===== CONFIG =====
-const GEMINI_KEY = "my api key";
+const GEMINI_KEY = "my key api";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDHmXD59FVU1SKdDDMS3T8_zv3BGHF55bE",
+  authDomain: "community-hero-web.firebaseapp.com",
+  projectId: "community-hero-web",
+  storageBucket: "community-hero-web.firebasestorage.app",
+  messagingSenderId: "318488212451",
+  appId: "1:318488212451:web:20be005fc7d4e05efca6d6",
+  measurementId: "G-L595KXR93S"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
 
 // ===== STATE =====
 let issues = [];
@@ -347,6 +362,7 @@ function saveIssue(r) {
     imgSrc: imgSrc,
     date: new Date().toLocaleDateString('en-GB')
   });
+  saveToFirebase(issues[0]);
 
   addMapMarker(issues[0]);
   renderFeed();
@@ -545,4 +561,12 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
+}
+async function saveToFirebase(issue) {
+  try {
+    await db.collection("reports").add(issue);
+    console.log("Saved to Firestore");
+  } catch (err) {
+    console.error(err);
+  }
 }

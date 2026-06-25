@@ -6,7 +6,6 @@
   <title>Community Hero - Civic OS</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- Leaflet Map (FREE - no API key needed) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -27,6 +26,18 @@
       <div class="location-pill" id="nav-location">
         <span class="location-dot"></span>
         <span id="nav-location-text">Detecting location...</span>
+      </div>
+
+      <!-- Login Button -->
+      <button id="loginBtn" onclick="googleLogin()" class="login-btn">
+        🔑 Login with Google
+      </button>
+
+      <!-- User Profile -->
+      <div id="userProfile" style="display:none" class="user-profile">
+        <img id="userPhoto" src="" class="user-photo" alt="user">
+        <span id="userName" class="user-name"></span>
+        <button onclick="logout()" class="logout-btn">Logout</button>
       </div>
     </div>
   </nav>
@@ -57,7 +68,6 @@
     </div>
 
     <div class="hero-right">
-      <!-- Live Impact Card -->
       <div class="impact-card">
         <div class="impact-header">
           <span class="impact-title">Live impact</span>
@@ -80,8 +90,6 @@
             <div class="stat-icon">✓</div>
           </div>
         </div>
-
-        <!-- Rank Card -->
         <div class="rank-card">
           <div class="rank-left">
             <div class="rank-icon">🏆</div>
@@ -102,7 +110,6 @@
   <!-- MAIN CONTENT -->
   <main class="main-grid">
 
-    <!-- LEFT: Reporter + AI Result -->
     <div class="left-col">
 
       <!-- AI Issue Reporter -->
@@ -115,54 +122,48 @@
           <span class="gemini-badge">Gemini Vision</span>
         </div>
 
-        <!-- Media Tabs -->
         <div class="media-tabs">
-          <button class="mtab active" onclick="switchTab('upload', this)">
-            ↑ Upload
-          </button>
-          <button class="mtab" onclick="switchTab('video', this)">
-            ▶ Video
-          </button>
-          <button class="mtab" onclick="switchTab('live', this)">
-            ◉ Live
-          </button>
+          <button class="mtab active" onclick="switchTab('upload', this)">↑ Upload</button>
+          <button class="mtab" onclick="switchTab('video', this)">▶ Video</button>
+          <button class="mtab" onclick="switchTab('live', this)">◉ Live</button>
         </div>
 
-        <!-- Upload Area -->
         <div id="tab-upload">
-          <div class="drop-zone" onclick="document.getElementById('photoInput').click()"
-            ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+          <div class="drop-zone"
+            onclick="document.getElementById('photoInput').click()"
+            ondragover="event.preventDefault()"
+            ondrop="handleDrop(event)">
             <div class="drop-icon">↑</div>
             <div class="drop-text">Drop a photo or tap to browse</div>
             <div class="drop-hint">JPG, PNG or MP4 · up to 20MB</div>
-            <input type="file" id="photoInput" accept="image/*" style="display:none"
-              onchange="handlePhoto(this)">
+            <input type="file" id="photoInput" accept="image/*"
+              style="display:none" onchange="handlePhoto(this)">
           </div>
           <img id="photoPreview" style="display:none" class="media-preview">
         </div>
 
-        <!-- Video Tab -->
         <div id="tab-video" style="display:none">
-          <div class="drop-zone" onclick="document.getElementById('videoInput').click()">
+          <div class="drop-zone"
+            onclick="document.getElementById('videoInput').click()">
             <div class="drop-icon">▶</div>
             <div class="drop-text">Drop a video or tap to browse</div>
             <div class="drop-hint">MP4, MOV · up to 20MB</div>
-            <input type="file" id="videoInput" accept="video/*" style="display:none"
-              onchange="handleVideo(this)">
+            <input type="file" id="videoInput" accept="video/*"
+              style="display:none" onchange="handleVideo(this)">
           </div>
-          <video id="videoPreview" controls style="display:none" class="media-preview"></video>
+          <video id="videoPreview" controls
+            style="display:none" class="media-preview"></video>
         </div>
 
-        <!-- Live Camera Tab -->
         <div id="tab-live" style="display:none">
-          <video id="cameraFeed" autoplay playsinline class="media-preview"></video>
+          <video id="cameraFeed" autoplay playsinline
+            class="media-preview"></video>
           <button class="capture-btn" onclick="captureFromCamera()">
             ◉ Capture Photo
           </button>
           <canvas id="captureCanvas" style="display:none"></canvas>
         </div>
 
-        <!-- Location Row -->
         <div class="location-row">
           <div class="loc-info">
             <span class="loc-pin">📍</span>
@@ -171,12 +172,10 @@
           <button class="loc-btn" onclick="detectLocation()">Detect</button>
         </div>
 
-        <!-- Description -->
         <textarea id="description" class="desc-input"
           placeholder="Describe the issue — location details, how long it's been here, danger level...">
         </textarea>
 
-        <!-- Analyze Button -->
         <button class="analyze-btn" onclick="analyzeIssue()" id="analyzeBtn">
           ✨ Analyze &amp; Report
         </button>
@@ -192,11 +191,22 @@
           <span class="live-badge">Live</span>
         </div>
         <div id="ai-result-content"></div>
+
+        <!-- Complaint Letter Section -->
+        <div id="complaint-section" style="display:none;margin-top:20px">
+          <div class="panel-header" style="margin-bottom:12px">
+            <div class="panel-title">
+              <span class="panel-icon">📄</span>
+              AI Generated Complaint Letter
+            </div>
+            <button onclick="copyLetter()" class="copy-btn">📋 Copy</button>
+          </div>
+          <div id="complaint-letter" class="complaint-box"></div>
+        </div>
       </div>
 
     </div>
 
-    <!-- RIGHT: Map + Dashboard -->
     <div class="right-col">
 
       <!-- Live City Map -->
@@ -251,7 +261,18 @@
           </div>
         </div>
 
-        <!-- Categories -->
+        <!-- Area Health Score -->
+        <div class="health-score-section">
+          <div class="health-header">
+            <span class="cat-title">AREA HEALTH SCORE</span>
+            <span class="health-value" id="health-score">100</span>
+          </div>
+          <div class="health-bar-track">
+            <div class="health-bar-fill" id="health-bar" style="width:100%"></div>
+          </div>
+          <div class="health-label" id="health-label">Excellent</div>
+        </div>
+
         <div class="categories-section">
           <div class="cat-title">CATEGORIES</div>
           <div id="cat-breakdown"></div>
@@ -261,16 +282,44 @@
     </div>
   </main>
 
+  <!-- ADMIN PANEL (hidden by default) -->
+  <section class="admin-panel" id="admin-panel" style="display:none">
+    <div class="admin-header">
+      <h2>🔐 Admin Panel</h2>
+      <span class="admin-badge">Admin Access</span>
+    </div>
+    <div class="admin-stats">
+      <div class="admin-stat">
+        <div class="a-num" id="a-total">0</div>
+        <div class="a-label">Total Reports</div>
+      </div>
+      <div class="admin-stat">
+        <div class="a-num" id="a-pending">0</div>
+        <div class="a-label">Pending</div>
+      </div>
+      <div class="admin-stat">
+        <div class="a-num" id="a-resolved">0</div>
+        <div class="a-label">Resolved</div>
+      </div>
+    </div>
+    <div id="admin-feed"></div>
+  </section>
+
   <!-- COMMUNITY FEED -->
   <section class="feed-section" id="feed-section">
     <div class="feed-header">
       <h2 class="feed-title">Community Reports</h2>
       <div class="feed-filters">
-        <button class="feed-filter active" onclick="filterFeed('all', this)">All</button>
-        <button class="feed-filter" onclick="filterFeed('critical', this)">Critical</button>
-        <button class="feed-filter" onclick="filterFeed('high', this)">High</button>
-        <button class="feed-filter" onclick="filterFeed('new', this)">New</button>
-        <button class="feed-filter" onclick="filterFeed('resolved', this)">Resolved</button>
+        <button class="feed-filter active"
+          onclick="filterFeed('all', this)">All</button>
+        <button class="feed-filter"
+          onclick="filterFeed('critical', this)">Critical</button>
+        <button class="feed-filter"
+          onclick="filterFeed('high', this)">High</button>
+        <button class="feed-filter"
+          onclick="filterFeed('new', this)">New</button>
+        <button class="feed-filter"
+          onclick="filterFeed('resolved', this)">Resolved</button>
       </div>
     </div>
     <div class="feed-grid" id="feed-grid">
@@ -289,6 +338,11 @@
 
   <!-- TOAST -->
   <div id="toast" class="toast"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
   <script src="app.js"></script>
 </body>
