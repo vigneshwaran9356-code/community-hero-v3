@@ -956,3 +956,224 @@ body {
   .footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
   .navbar { padding: 14px 20px; }
 }
+/* LOGIN */
+.login-btn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.login-btn:hover { background: var(--accent2); transform: scale(1.05); }
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+
+.user-photo {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+
+.user-name {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  width: auto;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover { border-color: var(--critical); color: var(--critical); }
+
+/* COMPLAINT LETTER */
+.complaint-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--text2);
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.copy-btn {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  width: auto;
+  transition: all 0.3s;
+}
+
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* HEALTH SCORE */
+.health-score-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.health-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.health-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  transition: color 0.5s;
+}
+
+.health-bar-track {
+  background: var(--panel2);
+  border-radius: 20px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.health-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--critical), var(--medium), var(--accent));
+  border-radius: 20px;
+  transition: width 1s ease;
+}
+
+.health-label {
+  font-size: 0.78rem;
+  color: var(--text2);
+  text-align: right;
+}
+
+/* ADMIN */
+.admin-panel {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px 30px;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-header h2 { font-size: 1.3rem; font-weight: 800; color: var(--text); }
+
+.admin-badge {
+  background: rgba(255,71,87,0.15);
+  border: 1px solid rgba(255,71,87,0.3);
+  color: var(--critical);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.admin-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.a-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.a-label { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+/* ===== PREDICTIVE INSIGHTS ===== */
+.pred-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s;
+}
+
+.pred-item:hover {
+  border-color: rgba(0,229,160,0.3);
+  transform: translateX(4px);
+}
+
+.pred-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pred-label {
+  font-size: 0.68rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.pred-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
